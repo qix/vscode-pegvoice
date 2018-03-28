@@ -1,12 +1,8 @@
 An interface between pegvoice voice coding and vscode
 
-## Features
+##
 
-Provides pegvoice with an api to control vscode
-
-## Release Notes
-
-Not released yet
+Uses syntax highlighting from https://github.com/futagoza/vsc-syntax-pegjs
 
 ### For more information
 

@@ -1,0 +1,257 @@
+{
+  "name": "PEG.js File",
+  "fileTypes": ["peg-grammar"],
+  "scopeName": "grammar.pegjs",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#assignment-operator"
+    },
+    {
+      "include": "#expressions"
+    },
+    {
+      "include": "#eos"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "include": "#documentation-block"
+        },
+        {
+          "include": "#comment-block"
+        },
+        {
+          "include": "#line-comment"
+        }
+      ]
+    },
+    "expressions": {
+      "patterns": [
+        {
+          "include": "#character-class"
+        },
+        {
+          "include": "#initializer-block"
+        },
+        {
+          "include": "#initializer-label"
+        },
+        {
+          "include": "#rule-name"
+        },
+        {
+          "include": "#any-character"
+        },
+        {
+          "include": "#string-literal"
+        },
+        {
+          "include": "#choice-operator"
+        },
+        {
+          "include": "#predicate-operators"
+        },
+        {
+          "include": "#quantifier-operators"
+        },
+        {
+          "include": "#sequence"
+        }
+      ]
+    },
+    "documentation-block": {
+      "name": "comment.block.documentation.pegjs",
+      "begin": "/\\*\\*(?!/)",
+      "end": "\\*/",
+      "captures": {
+        "0": { "name": "punctuation.definition.comment.pegjs" }
+      }
+    },
+    "comment-block": {
+      "name": "comment.block.pegjs",
+      "begin": "/\\*",
+      "end": "\\*/",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.comment.begin.pegjs" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.comment.end.pegjs" }
+      }
+    },
+    "line-comment": {
+      "name": "comment.line.double-slash.pegjs",
+      "match": "(//).*$\\n?",
+      "captures": {
+        "1": { "name": "punctuation.definition.comment.pegjs" }
+      }
+    },
+    "initializer-block": {
+      "name": "meta.group.braces.curly.pegjs",
+      "begin": "\\{",
+      "beginCaptures": {
+        "0": { "name": "meta.brace.curly.begin.pegjs" }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": { "name": "meta.brace.curly.end.pegjs" }
+      },
+      "patterns": [
+        {
+          "include": "#initializer-block"
+        }
+      ]
+    },
+    "initializer-label": {
+      "match": "(\\$[$\\w]+|[_a-zA-Z][$\\w]*)\\s*(:)",
+      "captures": {
+        "1": {
+          "name": "variable.parameter.function.pegjs"
+        },
+        "2": {
+          "name": "keyword.operator.assignment.pegjs"
+        }
+      }
+    },
+    "rule-name": {
+      "name": "entity.name.class.pegjs",
+      "match": "(\\$[$\\w]+|[_a-zA-Z][$\\w]*)"
+    },
+    "assignment-operator": {
+      "name": "keyword.operator.assignment.pegjs",
+      "match": "="
+    },
+    "choice-operator": {
+      "name": "keyword.operator.logical.pegjs",
+      "match": "/"
+    },
+    "predicate-operators": {
+      "name": "keyword.operator.bitwise.pegjs",
+      "match": "[$&!]"
+    },
+    "quantifier-operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.ternary.pegjs",
+          "match": "\\?"
+        },
+        {
+          "name": "keyword.operator.arithmetic.pegjs",
+          "match": "[\\*\\+]"
+        }
+      ]
+    },
+    "character-class": {
+      "name": "string.regexp.pegjs",
+      "begin": "(\\[)(\\^?)",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.string.begin.pegjs" },
+        "2": { "name": "keyword.operator.negate.pegjs" }
+      },
+      "end": "(\\])(i?)",
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.string.end.pegjs" },
+        "2": { "name": "keyword.other.pegjs" }
+      },
+      "patterns": [
+        {
+          "include": "#character-content"
+        }
+      ]
+    },
+    "character-content": {
+      "patterns": [
+        {
+          "name": "constant.other.character-class.range.pegjs",
+          "match": "-"
+        },
+        {
+          "include": "#string-content"
+        },
+        {
+          "match": "(\\\\\\[|\\\\\\])"
+        }
+      ]
+    },
+    "string-literal": {
+      "name": "punctuation.definition.string.quoted.pegjs",
+      "patterns": [
+        {
+          "name": "string.quoted.double.pegjs",
+          "begin": "\"",
+          "end": "\"(i?)",
+          "endCaptures": {
+            "1": { "name": "keyword.other.pegjs" }
+          },
+          "patterns": [
+            {
+              "include": "#string-content"
+            },
+            {
+              "match": "[^\"]*[^\\n\\r\"\\\\]$",
+              "name": "invalid.illegal.string.pegjs"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.pegjs",
+          "begin": "'",
+          "end": "'(i?)",
+          "endCaptures": {
+            "1": { "name": "keyword.other.pegjs" }
+          },
+          "patterns": [
+            {
+              "include": "#string-content"
+            },
+            {
+              "match": "[^']*[^\\n\\r'\\\\]$",
+              "name": "invalid.illegal.string.pegjs"
+            }
+          ]
+        }
+      ]
+    },
+    "string-content": {
+      "patterns": [
+        {
+          "name": "constant.character.escape.newline.pegjs",
+          "match": "\\\\\\s*\\n"
+        },
+        {
+          "name": "constant.character.escape.pegjs",
+          "match":
+            "\\\\([1-7][0-7]{0,2}|[0-7]{2,3}|[bfnrtv0'\"\\\\]|x\\h{2}|u\\{\\h+\\}|u\\h{4})"
+        }
+      ]
+    },
+    "any-character": {
+      "name": "string.unquoted.pegjs",
+      "match": "\\."
+    },
+    "sequence": {
+      "name": "meta.group.braces.round.pegjs",
+      "begin": "\\(",
+      "beginCaptures": {
+        "0": { "name": "meta.brace.round.begin.pegjs" }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": { "name": "meta.brace.round.end.pegjs" }
+      },
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "eos": {
+      "name": "punctuation.terminator.statement.pegjs",
+      "match": ";"
+    }
+  }
+}

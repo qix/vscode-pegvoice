@@ -1,38 +1,53 @@
 {
-    "name": "vscode-pegvoice",
-    "displayName": "vscode-pegvoice",
-    "description": "A plugin to interface with pegvoice voice coding",
-    "version": "0.0.1",
-    "publisher": "pegvoice",
-    "engines": {
-        "vscode": "^1.18.0"
-    },
-    "categories": [
-        "Other"
+  "name": "vscode-pegvoice",
+  "displayName": "vscode-pegvoice",
+  "description": "A plugin to interface with pegvoice voice coding",
+  "version": "0.0.1",
+  "publisher": "pegvoice",
+  "engines": {
+    "vscode": "^1.18.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["*"],
+  "main": "./out/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "pegvoice",
+        "extensions": [".pegvoice"],
+        "configuration": "./configuration.json"
+      }
     ],
-    "activationEvents": [
-        "onCommand:extension.sayHello"
-    ],
-    "main": "./out/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "extension.sayHello",
-                "title": "Hello World"
-            }
-        ]
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.6",
-        "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
-    }
+    "grammars": [
+      {
+        "language": "pegvoice",
+        "scopeName": "source.pegvoice",
+        "path": "./syntaxes/pegvoice.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.6",
+    "@types/node": "^7.0.43",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "crocket": "^0.9.11",
+    "mkdirp": "^0.5.1",
+    "restify": "^6.3.3",
+    "tmp": "0.0.33"
+  },
+  "__metadata": {
+    "id": "acb71fda-fe8b-4f8a-a181-efb5ab8f181a",
+    "publisherDisplayName": "pegvoice",
+    "publisherId": "fbbce625-98d3-4c5f-8fe3-1c71b074f12c"
+  }
 }
