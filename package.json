@@ -7,14 +7,20 @@
   "engines": {
     "vscode": "^1.18.0"
   },
-  "categories": ["Other"],
-  "activationEvents": ["*"],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./out/extension",
   "contributes": {
     "languages": [
       {
         "id": "pegvoice",
-        "extensions": [".pegvoice"],
+        "extensions": [
+          ".pegvoice"
+        ],
         "configuration": "./configuration.json"
       }
     ],
