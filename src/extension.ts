@@ -3,7 +3,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as restify from 'restify';
-import * as fs from 'fs';
+import {promises as fs} from 'fs';
 import * as tmp from 'tmp';
 import * as path from 'path';
 import * as os from 'os';
@@ -12,7 +12,7 @@ import { Utf8AsciiBinaryEncoding } from 'crypto';
 
 let server = null;
 
-function startServer() {
+async function startServer() {
     if (server) {
         stopServer();
     }
@@ -40,22 +40,19 @@ function startServer() {
         });
     });
 
-    const socketPath = path.join(os.homedir(), '.pegvoice/vscode-socket');
-    //mkdirp.sync(socketRoot);
-    //const socketPath = tmp.tmpNameSync({
-    //    dir: socketRoot,
-    //});
-    
+    const socketPath = path.join(os.homedir(), '.pegvoice/vscode-socket-' + process.pid);
     try {
-        fs.unlink(socketPath, err => {
-            if (err && err.code !== 'ENOENT') {
-                throw err;
-            }
-        });
+      try {
+        await fs.unlink(socketPath);
+      } catch (err) {
+        if (err.code !== 'ENOENT') { 
+            throw err;
+        }
+      }
 
-        server.listen(socketPath, function() {
-            console.log('vscode-pegvoice at %s', socketPath);
-        });
+      server.listen(socketPath, function() {
+          console.log('vscode-pegvoice at %s', socketPath);
+      });
     } catch (err) {
         server = null;
         throw err;
@@ -68,11 +65,14 @@ function stopServer() {
     server = null;
 }
 
-export function activate(context: vscode.ExtensionContext) {
-    const stateHandler = (state: vscode.WindowState) => {
+const me = Math.random();
+
+export async function activate(context: vscode.ExtensionContext) {
+    const stateHandler = async (state: vscode.WindowState) => {
         if (state.focused) {
+          if (!server) {
             try {
-                startServer();
+                await startServer();
             } catch (err) {
                 console.error('Failed to start server');
                 console.error(err.stack);
@@ -80,13 +80,17 @@ export function activate(context: vscode.ExtensionContext) {
                     stateHandler(vscode.window.state);
                 }, 100);
             }
+          }
         } else {
             stopServer();
         }
     };
 
-    vscode.window.onDidChangeWindowState(stateHandler);
-    stateHandler(vscode.window.state);
+    vscode.window.onDidChangeWindowState((state) => {
+      stateHandler(state);
+    });
+
+    await stateHandler(vscode.window.state);
 }
 
 // this method is called when your extension is deactivated
